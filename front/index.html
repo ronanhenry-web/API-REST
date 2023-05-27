@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Front API-REST</title>
+</head>
+
+<body>
+
+    <div id="header">
+        <h1>API-REST PetStore</h1>
+        <div>
+            <h2>Petstore</h2>
+            <h2>Adresses</h2>
+            <h2>Animals</h2>
+            <h2>Produits</h2>
+        </div>
+    </div>
+
+    <div id="title">Listes des Adresses
+    </div>
+    <div id="addButton">Ajouter une adresse</div>
+
+    <div id="list">
+        <div id="listContent">
+                <li>
+                <span>
+                    <span id="editButton">Modifier</span>
+                    <span id="deleteButton">Supprimer</span>
+                </span>
+            </li>
+        </div>
+    </div>
+
+    <div id="addForm" style="display: none;">
+        <h2>Ajouter une adresse</h2>
+        <form id="addressForm">
+            <label for="number">Numéro :</label>
+            <input type="text" id="number" required>
+            <label for="street">Rue :</label>
+            <input type="text" id="street" required>
+            <label for="zipCode">Code postal :</label>
+            <input type="text" id="zipCode" required>
+            <label for="city">Ville :</label>
+            <input type="text" id="city" required>
+            <button type="button" id="saveButton" onclick="addAddress()">Enregistrer</button>
+            <button type="button" id="cancelButton" onclick="cancelAddAddress()">Annuler</button>
+        </form>
+    </div>
+    
+
+    <script>
+        var editAndDeleteButton = "<span> <span id=\"editButton\">Modifier</span> <span id=\"deleteButton\">Supprimer</span> </span>"
+        // On fait une requête fetch sur l'API
+        fetch('http://localhost:8080/addresses')
+            .then((response) => {
+                // On récupère la réponse de l'API
+                return response.json()
+            })
+            .then((data) => {
+                // On récupère les données de l'API
+                console.log(data)
+                let list = document.getElementById('listContent')
+                let addresses = data._embedded.addresses
+                console.log(addresses)
+                // Je veux afficher chaque élément
+                addresses.forEach(element => {
+                    let li = document.createElement('li')
+                    li.innerHTML = element.city + editAndDeleteButton
+                    list.appendChild(li)
+                });
+            })
+
+            function showAddAddressForm() {
+                // Récupérer le formulaire d'ajout d'adresse
+                var addForm = document.getElementById('addForm');
+
+                // Afficher le formulaire d'ajout d'adresse
+                addForm.style.display = 'block';
+            }
+    </script>
+
+</body>
+
+</html>
+
+<style>
+    body {
+    background-color: #fbe6ed;
+    color: #333;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    line-height: 1.42857143;
+    margin: 0;
+    padding: 0;
+}
+
+
+/* ========== HEADER ========== */
+
+#header {
+    width: 100vw;
+    height: 5rem;
+    background-color: #63B6E2;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#header h1 {
+    margin-left: 1rem;
+    color: white;
+}
+
+#header div {
+    display: flex;
+    margin-right: 1rem;
+    color: white;
+    text-decoration: none;
+}
+
+#header div h2 {
+    cursor: pointer;
+    padding: 1rem;
+    transition: all 0.2s ease-in-out;
+}
+
+#header div h2:hover {
+    color: blue;
+}
+
+/* ========== HEADER ========== */
+
+/* ========== MAIN ========== */
+
+#title {
+    margin: auto;
+    margin-top: 2rem;
+    width: 95vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2rem;
+}
+
+#addButton {
+    margin: auto;
+    margin-top: 1rem;
+    width: 15rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5rem;
+    background-color: #00e64d;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+#addButton:hover {
+    background-color: #00be3f;
+}
+
+#list {
+    margin: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 95vw;
+    height: 40rem;
+    overflow: auto;
+    margin-top: 1rem;
+    border: 1px solid black;
+}
+
+#listContent {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+#listContent li {
+    /* background-color: blue; */
+    /* margin: 5px; */
+    border-bottom: 1px solid gray;
+    padding: 5px;
+    list-style: none;
+    font-size: 1rem;
+    display: flex;
+    justify-content: space-between;
+    height: 1.5rem;
+}
+
+#listContent li.grayColor {
+    background-color: #e6e6e6;
+}
+
+#listContent li span {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 15rem;
+}
+
+#listContent li span span#editButton {
+    background-color: #FFBD50;
+    height: 100%;
+    margin-right: 1rem;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+#listContent li span span#deleteButton {
+    background-color: #ff4e4e;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+#listContent li span span#editButton:hover {
+    background-color: #ff9f4d;
+}
+
+#listContent li span span#deleteButton:hover {
+    background-color: #ff1225;
+}
+</style>

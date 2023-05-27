@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CRUD des adresses</title>
+    <style>
+        /* Styles CSS pour le formulaire et la liste d'adresses */
+        /* ... */
+    </style>
+</head>
+<body>
+    <h1>CRUD des adresses</h1>
+
+    <h2>Ajouter/Modifier une adresse</h2>
+    <form id="addressForm">
+        <input type="hidden" id="addressId" value="">
+        <label for="number">Numéro :</label>
+        <input type="text" id="number">
+        <label for="street">Rue :</label>
+        <input type="text" id="street">
+        <label for="zipCode">Code postal :</label>
+        <input type="text" id="zipCode">
+        <label for="city">Ville :</label>
+        <input type="text" id="city">
+        <button type="button" id="saveButton">Enregistrer</button>
+        <button type="button" id="cancelButton">Annuler</button>
+    </form>
+
+    <h2>Liste des adresses</h2>
+    <ul id="addressList"></ul>
+
+    <script>
+        // Fonction pour effectuer une requête GET à l'API
+        function fetchAddresses() {
+            fetch('http://localhost:8080/addresses')
+                .then(response => response.json())
+                .then(data => {
+                    const addressList = document.getElementById('addressList');
+                    addressList.innerHTML = ''; // Nettoyer la liste avant d'ajouter les adresses
+
+                    data.forEach(address => {
+                        const li = document.createElement('li');
+                        li.textContent = address.street;
+                        addressList.appendChild(li);
+                    });
+                })
+                .catch(error => {
+                    console.error('Erreur lors de la récupération des adresses:', error);
+                });
+        }
+
+
+        
+
+        // Fonction pour ajouter ou mettre à jour une adresse via une requête POST ou PUT à l'API
+        function saveAddress() {
+            const addressId = document.getElementById('addressId').value;
+            const number = document.getElementById('number').value;
+            const street = document.getElementById('street').value;
+            const zipCode = document.getElementById('zipCode').value;
+            const city = document.getElementById('city').value;
+
+            const url = addressId ? `http://localhost:8080/addresses/${addressId}` : 'http://localhost:8080/addresses';
+            const method = addressId ? 'PUT' : 'POST';
+            const body = JSON.stringify({ number, street, zipCode, city });
+
+            fetch(url, {
+                method: method,
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: body
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Adresse enregistrée avec succès:', data);
+                    clearForm();
+                    fetchAddresses(); // Mettre à jour la liste des adresses après l'enregistrement
+                })
+                .catch(error => {
+                    console.error('Erreur lors de l\'enregistrement de l\'adresse:', error);
+                });
+        }
+
+        // Fonction pour supprimer une adresse via une requête DELETE à l'API
+        function deleteAddress(addressId) {
+            const url = `http://localhost:8080/addresses/${addressId}`;
+
+            fetch(url, {
+                method: 'DELETE'
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Adresse supprimée avec succès:', data);
+                    fetchAddresses(); // Mettre à jour la liste des adresses après la suppression
+                })
+                .catch(error => {
+                    console.error('Erreur lors de la suppression de l\'adresse:', error);
+                });
+        }
+
+        // Fonction pour vider le formulaire
+        function clearForm() {
+            const addressIdInput = document.getElementById('addressId');
+            const numberInput = document.getElementById('number');
+            const streetInput = document.getElementById('street');
+            const zipCodeInput = document.getElementById('zipCode');
+            const cityInput = document.getElementById('city');
+
+            addressIdInput.value = '';
+            numberInput.value = '';
+            streetInput.value = '';
+            zipCodeInput.value = '';
+            cityInput.value = '';
+        }
+
+        // Gestionnaire d'événement pour le bouton "Enregistrer"
+        document.getElementById('saveButton').addEventListener('click', function() {
+            saveAddress();
+        });
+
+        // Gestionnaire d'événement pour le bouton "Annuler"
+        document.getElementById('cancelButton').addEventListener('click', function() {
+            clearForm();
+        });
+
+        // Charger les adresses lors du chargement de la page
+        fetchAddresses();
+    </script>
+</body>
+</html>
