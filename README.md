@@ -7,7 +7,7 @@ Objectif découvrir Spring
 Le projet a été créé sous IntelliJ, pour le démarrer suivre les étapes suivantes.
 
 - Cloner le projet
-- Avoir une BDD et suivre les consignes du fichier properties
+- Avoir une BDD et suivre les consignes du fichier properties + les erreurs SQL indiquant de créer des tables
 - Remplir juste la data pas la structure (en localhost)
 - Compiler le fichier main
 
